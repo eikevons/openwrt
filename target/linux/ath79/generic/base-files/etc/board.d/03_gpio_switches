@@ -32,6 +32,7 @@ telco,t1)
 	ucidef_add_gpio_switch "lte_reset" "LTE Reset" "12" "1"
 	;;
 devolo,dlan-pro-1200plus-ac)
+# TODO(EIKE): Do we need to add dlan-pro-500plus here?
 	ucidef_add_gpio_switch "plc_enable" "PLC enable" "13" "0"
 	;;
 devolo,magic-2-wifi)
