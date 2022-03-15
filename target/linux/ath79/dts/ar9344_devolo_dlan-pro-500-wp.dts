@@ -79,6 +79,22 @@
 			debounce-interval = <60>;
 		};
 	};
+
+        // Overwrite the register for GMAC0 connection
+	ahb: ahb {
+		gmac: gmac@18070000 {
+			compatible = "qca,ar9340-gmac";
+                        // From ar934x.dtsi:
+                        // 0x14 = 0b10100
+                        //          | +-> GMII_GMAC0
+                        //          +-> MII_GMAC0_SLAVE (GMAC0 receives rx and tx clocks)
+			// reg = <0x18070000 0x14>;
+                        // 0b010001 = 0x11
+                        //    |   +- RGMII_GMAC0
+                        //    +-> MII_GMAC0_SLAVE
+                        reg = <0x18070000 0x11>;
+		};
+	};
 };
 
 
@@ -169,7 +185,17 @@
 	mac-address-increment = <2>;
 
 	phy-mode = "rgmii";
-	phy-handle = <&phy0>;
+	/* phy-handle = <&phy0>; */
+
+	gmac-config {
+		device = <&gmac>;
+		rgmii-gmac0 = <1>;
+	};
+
+	fixed-link {
+		speed = <1000>;
+		full-duplex;
+	};
 };
 
 /* GMAC1 is connected to the internal switch */
@@ -192,7 +218,7 @@
 	nvmem-cell-names = "mac-address";
 	mac-address-increment = <1>;
 
-	phy-mode = "gmii";
+	phy-mode = "gmii"; // TODO: This is already set in ar934x.dtsi
         phy-handle = <&phy1>;
 };
 
@@ -226,24 +252,29 @@
         // ath79_eth0_data.speed = SPEED_1000;
         // ath79_eth0_data.duplex = DUPLEX_FULL;
         // ath79_register_eth(0);
-        // This is the PLC
-	phy0: ethernet-phy@0 {
-		reg = <0>;
-                phy-mode = "rgmii"; 
-                qca,ar8327-initvals = <
-                    // PORT0: GMII, no rx_/_tx_delay
-                    //0x04 0x00000000 // EIKE: gmii
-                    // EIKE:
-                    // 0b100000000000000000000000000
-                    // 0b100000000000100000000000000
-                    //   |           |
-                    //   |           +-> bit: 14 GMII phy mode
-                    //   +-> bit 26: RGMII
-                    // 0x04 0x07600000
-                    0x04 0x04000000 // PORT0_PAD: RGMII
-                    0x7c 0x0000007e // PORT0_STATUS: speed 1000, full duplex
-                >;
-	};
+        // This is the PLC connected to GMAC0 on the ar9340
+	// phy0: ethernet-phy@0 {
+	// 	reg = <0>;
+        //         /* compatible =  "qca,ar9340-gmac"; */
+        //         phy-mode = "rgmii"; 
+        //         // See target/linux/ath79/files/drivers/net/ethernet/atheros/ag71xx/ag71xx_gmac.c
+        //         /* rgmii-gmac0 = <1>; */
+        //         /*
+        //         qca,ar8327-initvals = <
+        //             // PORT0: GMII, no rx_/_tx_delay
+        //             //0x04 0x00000000 // EIKE: gmii
+        //             // EIKE:
+        //             // 0b100000000000000000000000000
+        //             // 0b100000000000100000000000000
+        //             //   |           |
+        //             //   |           +-> bit: 14 GMII phy mode
+        //             //   +-> bit 26: RGMII
+        //             // 0x04 0x07600000
+        //             0x04 0x00000000 // PORT0_PAD: GMII mac mode(?)
+        //             0x7c 0x0000007e // PORT0_STATUS: speed 1000, full duplex
+        //         >;
+        //         */
+	// };
 
         // This is the ethernet switch (similar to the 1200ac)
         // BUT the config in 19.07 differs also to 500wp
