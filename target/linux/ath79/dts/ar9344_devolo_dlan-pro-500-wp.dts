@@ -99,10 +99,10 @@
 
 
 &gpio {
-	wlan_power {
+	plc_power {
 		gpio-hog;
-		line-name = "WLAN power";
-		gpios = <&gpio 22 GPIO_ACTIVE_HIGH>;
+		line-name = "PLC power";
+		gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
 		output-high;
 	};
 };
