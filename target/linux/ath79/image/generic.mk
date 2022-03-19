@@ -726,8 +726,9 @@ define Device/devolo_dlan-pro-500-wp
   SOC := ar9344
   DEVICE_VENDOR := Devolo
   DEVICE_MODEL := dLAN pro wireless 500+
+  # DEVICE_PACKAGES := kmod-ath9k
   DEVICE_PACKAGES := kmod-ath10k-ct ath10k-firmware-qca988x-ct
-  # This is just hand-waving
+  # IMAGE_SIZE := 1680k
   IMAGE_SIZE := 7000k
 endef
 TARGET_DEVICES += devolo_dlan-pro-500-wp
