@@ -150,13 +150,19 @@
 			partition@70000 {
 				compatible = "denx,uimage";
 				label = "firmware";
+                                // From target/linux/ar71xx/image/legacy.mk in 19.07
+                                // dlan_pro_500_wp_mtdlayout=...
+                                // ...mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,64k(Config1)ro,64k(Config2)ro,7680k@0x70000(firmware),64k(art)ro
+                                // dlan_pro_1200_ac_mtdlayout=...
+                                // ...mtdparts=spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,64k(Config1)ro,64k(Config2)ro,15872k@0x70000(firmware),64k(art)ro
+                                // 0x780000 = 7680 * 1024
 				reg = <0x70000 0x780000>;
 			};
 
-			art: partition@ff0000 {
+			art: partition@7f0000 {
 				label = "art";
 				reg = <0x7f0000 0x10000>;
-				read-only;
+				/* read-only; */
 			};
 		};
 	};
