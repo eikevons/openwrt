@@ -80,7 +80,6 @@
 		};
 	};
 
-        /*
         // Overwrite the register for GMAC0 connection
 	ahb: ahb {
 		gmac: gmac@18070000 {
@@ -96,7 +95,6 @@
                         reg = <0x18070000 0x11>;
 		};
 	};
-        */
 };
 
 
