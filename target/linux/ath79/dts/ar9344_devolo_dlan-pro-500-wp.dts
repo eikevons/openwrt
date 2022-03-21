@@ -315,7 +315,7 @@
         //   .rxclk_delay_sel = AR8327_CLK_DELAY_SEL0,
 	phy1: ethernet-phy@1 {
         // OR ... ethernet-switch@1 { ?
-		reg = <0>;
+		reg = <1>;
 
                 // The 19.07 set-up uses
                 // AR934X_ETH_CFG_RGMII_GMAC0
