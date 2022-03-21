@@ -241,10 +241,10 @@ ath79_setup_interfaces()
 		;;
         devolo,dlan-pro-500-wp)
                 # TODO(EIKE): This was in the 19.07 code. Do we need this?
-                # #ucidef_set_interface_lan "eth0 eth1"
+                ucidef_set_interface_lan "eth0 eth1"
                 # ucidef_set_interfaces_lan_wan "eth0 eth1.1 eth1.2" "eth1.3"
-		ucidef_add_switch "switch0" \
-			"0@eth0" "2:wan" "3:lan" "4:lan"
+		# ucidef_add_switch "switch0" \
+			#"0@eth0" "2:wan" "3:lan" "4:lan"
 		;;
 
 	dlink,dap-2695-a1)
