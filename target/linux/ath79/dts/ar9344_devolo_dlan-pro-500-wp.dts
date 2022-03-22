@@ -242,7 +242,6 @@
         phy-handle = <&phy1>;
 };
 
-/*
 &wmac {
 	status = "okay";
 
@@ -258,7 +257,6 @@
 		reg = <0 0 0 0 0>;
 	};
 };
-*/
 
 &mdio0 {
 	status = "okay";
