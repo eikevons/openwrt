@@ -204,22 +204,18 @@
 	nvmem-cell-names = "mac-address";
 	mac-address-increment = <4>;
 
-	// phy-mode = "rgmii";
+	phy-mode = "rgmii";
 	// phy-handle = <&phy0>;
 
-        /*
 	gmac-config {
 		device = <&gmac>;
 		rgmii-gmac0 = <1>;
 	};
-        */
 
-        /*
 	fixed-link {
 		speed = <1000>;
 		full-duplex;
 	};
-        */
 };
 
 // GMAC1 is connected to the internal switch
