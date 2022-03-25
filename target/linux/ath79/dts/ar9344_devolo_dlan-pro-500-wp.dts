@@ -44,13 +44,8 @@
 			gpios = <&gpio 14 GPIO_ACTIVE_LOW>;
 		};
 
-		led_dlan_a: dlan_a {
-			label = "a:dlan";
-			gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
-		};
-
-		led_dlan_b: dlan_b {
-			label = "b:dlan";
+		led_dlan: dlan_greed {
+			label = "green:dlan";
 			gpios = <&gpio 17 GPIO_ACTIVE_LOW>;
 		};
 	};
@@ -107,14 +102,19 @@
 		output-high;
 	};
         */
-        /*
+        // Activate PLC power on boot
 	plc_power {
 		gpio-hog;
 		line-name = "PLC power";
-		gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
+		gpios = <&gpio 13 GPIO_ACTIVE_HIGH>;
 		output-high;
 	};
-        */
+	// plc_led {
+	// 	// gpio-hog;
+	// 	line-name = "PLC led";
+	// 	gpios = <&gpio 17 GPIO_ACTIVE_LOW>;
+	// 	output-high;
+	// };
 };
 
 // Taken from target/linux/ar71xx/image/legacy.mk in the 19.07 branch:
