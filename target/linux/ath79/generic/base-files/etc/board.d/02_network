@@ -594,10 +594,6 @@ ath79_setup_macs()
 	devolo,magic-2-wifi)
 		label_mac=$(macaddr_add "$(mtd_get_mac_binary art 0x1002)" 3)
 		;;
-	# TODO(EIKE): Do we need to add something here?
-	devolo,dlan-pro-500-wp)
-		label_mac=$(macaddr_add "$(mtd_get_mac_binary art 0x1002)" 3)
-		;;
 	dlink,dap-1330-a1|\
 	dlink,dap-1365-a1|\
 	dlink,dch-g020-a1)

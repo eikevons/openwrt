@@ -14,34 +14,35 @@
 		led-failsafe = &led_wlan_blue;
 		led-running = &led_status_green;
 		led-upgrade = &led_wlan_blue;
+		label-mac-device = &eth0;
 	};
 
 	leds {
 		compatible = "gpio-leds";
 
-		led_wlan_green: wlan_green {
+		wlan_green {
 			label = "green:wlan";
 			gpios = <&gpio 12 GPIO_ACTIVE_LOW>;
-			linux,default-trigger = "phy1tpt";
+			linux,default-trigger = "phy0tpt";
 		};
 
-		led_wlan_blue: wlan_blue {
+		wlan_blue {
 			label = "blue:wlan";
 			gpios = <&gpio 11 GPIO_ACTIVE_LOW>;
 			linux,default-trigger = "phy1tpt";
 		};
 
-		led_status_green: status_green {
+		status_green {
 			label = "green:status";
 			gpios = <&gpio 16 GPIO_ACTIVE_LOW>;
 		};
 
-		led_eth_green: eth_green {
+		eth_green {
 			label = "green:eth";
 			gpios = <&gpio 14 GPIO_ACTIVE_LOW>;
 		};
 
-		led_dlan: dlan_greed {
+		dlan_green {
 			label = "green:dlan";
 			gpios = <&gpio 17 GPIO_ACTIVE_LOW>;
 		};
@@ -54,28 +55,24 @@
 			label = "Reset button";
 			linux,code = <KEY_RESTART>;
 			gpios = <&gpio 4 GPIO_ACTIVE_LOW>;
-			debounce-interval = <60>;
 		};
 
 		wifi {
 			label = "WIFI button";
 			linux,code = <KEY_RFKILL>;
 			gpios = <&gpio 22 GPIO_ACTIVE_LOW>;
-			debounce-interval = <60>;
 		};
 
 		dlan {
 			label = "DLAN button";
 			linux,code = <BTN_0>;
 			gpios = <&gpio 21 GPIO_ACTIVE_LOW>;
-			debounce-interval = <60>;
 		};
 	};
 
 	ahb: ahb {
 		// Overwrite the register for GMAC0 connection
-		gmac: gmac@18070000 {
-			compatible = "qca,ar9340-gmac";
+                &gmac {
 			// 0b010001 = 0x11
 			//    |   +- RGMII_GMAC0
 			//    +-> MII_GMAC0_SLAVE
@@ -84,13 +81,25 @@
 	};
 };
 
-&gpio {
+/*&gpio {
 	plc_power {
 		gpio-hog;
 		line-name = "PLC power";
 		gpios = <&gpio 13 GPIO_ACTIVE_HIGH>;
 		output-high;
 	};
+};*/
+
+
+plc-regulator {
+	compatible = "regulator-fixed";
+	gpio = <&gpio 13 GPIO_ACTIVE_HIGH>;
+	regulator-name = "plc_vcc";
+	regulator-min-microvolt = <3300000>;
+	regulator-max-microvolt = <3300000>;
+	enable-active-high;
+	regulator-always-on;
+	regulator-boot-on;
 };
 
 &spi {
@@ -106,7 +115,7 @@
 			#address-cells = <1>;
 			#size-cells = <1>;
 
-			uboot: partition@0 {
+			partition@0 {
 				label = "u-boot";
 				reg = <0x0 0x40000>;
 				read-only;
@@ -136,10 +145,18 @@
 				reg = <0x70000 0x780000>;
 			};
 
-			art: partition@7f0000 {
+			partition@7f0000 {
 				label = "art";
 				reg = <0x7f0000 0x10000>;
 				read-only;
+
+				compatible "nvmem-cells";
+				#address-cells = <1>;
+				#size-cells = <1>;
+
+				cal_ath9k: calibration@1000 {
+					reg: <0x1000 0x440>;
+				};
 			};
 		};
 	};
@@ -190,7 +207,8 @@
 &wmac {
 	status = "okay";
 
-	mtd-cal-data = <&art 0x1000>;
+	nvmem-cells = <&cal_ath9k>;
+	nvmem-cell-names = "calibration";
 };
 
 &mdio0 {
