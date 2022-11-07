@@ -26,13 +26,13 @@
 			linux,default-trigger = "phy0tpt";
 		};
 
-		wlan_blue {
+		led_wlan_blue: wlan_blue {
 			label = "blue:wlan";
 			gpios = <&gpio 11 GPIO_ACTIVE_LOW>;
 			linux,default-trigger = "phy1tpt";
 		};
 
-		status_green {
+		led_status_green: status_green {
 			label = "green:status";
 			gpios = <&gpio 16 GPIO_ACTIVE_LOW>;
 		};
@@ -70,36 +70,24 @@
 		};
 	};
 
-	ahb: ahb {
-		// Overwrite the register for GMAC0 connection
-                &gmac {
-			// 0b010001 = 0x11
-			//    |   +- RGMII_GMAC0
-			//    +-> MII_GMAC0_SLAVE
-			reg = <0x18070000 0x11>;
-		};
+	plc-regulator {
+		compatible = "regulator-fixed";
+		gpio = <&gpio 13 GPIO_ACTIVE_HIGH>;
+		regulator-name = "plc_vcc";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		enable-active-high;
+		regulator-always-on;
+		regulator-boot-on;
 	};
 };
 
-/*&gpio {
-	plc_power {
-		gpio-hog;
-		line-name = "PLC power";
-		gpios = <&gpio 13 GPIO_ACTIVE_HIGH>;
-		output-high;
-	};
-};*/
-
-
-plc-regulator {
-	compatible = "regulator-fixed";
-	gpio = <&gpio 13 GPIO_ACTIVE_HIGH>;
-	regulator-name = "plc_vcc";
-	regulator-min-microvolt = <3300000>;
-	regulator-max-microvolt = <3300000>;
-	enable-active-high;
-	regulator-always-on;
-	regulator-boot-on;
+// Overwrite the register for GMAC0 connection
+&gmac {
+	// 0b010001 = 0x11
+	//    |   +- RGMII_GMAC0
+	//    +-> MII_GMAC0_SLAVE
+	reg = <0x18070000 0x11>;
 };
 
 &spi {
@@ -150,13 +138,16 @@ plc-regulator {
 				reg = <0x7f0000 0x10000>;
 				read-only;
 
-				compatible "nvmem-cells";
+				compatible = "nvmem-cells";
 				#address-cells = <1>;
 				#size-cells = <1>;
 
 				cal_ath9k: calibration@1000 {
-					reg: <0x1000 0x440>;
+					reg = <0x1000 0x440>;
 				};
+				macaddr_art_1002: macaddr@1002 {
+					reg = <0x1002 0x6>;
+					};
 			};
 		};
 	};
@@ -225,15 +216,5 @@ plc-regulator {
 			0x0c 0x00000000 // PORT6 PAD MODE CTRL
 			0x7c 0x0000007e // PORT0_STATUS: speed 1000, full duplex
 		>;
-	};
-};
-
-&art {
-	compatible = "nvmem-cells";
-	#address-cells = <1>;
-	#size-cells = <1>;
-
-	macaddr_art_1002: macaddr@1002 {
-		reg = <0x1002 0x6>;
 	};
 };
